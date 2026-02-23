@@ -16,9 +16,9 @@ const exportPdfBtn = document.getElementById("exportPdfBtn");
 const clearBtn = document.getElementById("clearBtn");
 const chartCanvas = document.getElementById("expenseChart");
 
-const currencyFormatter = new Intl.NumberFormat("es-ES", {
+const currencyFormatter = new Intl.NumberFormat("es-CO", {
   style: "currency",
-  currency: "USD"
+  currency: "COP"
 });
 
 let entries = loadEntries();
@@ -34,11 +34,15 @@ entryForm.addEventListener("submit", (event) => {
   const newEntry = {
     id: crypto.randomUUID(),
     type: document.getElementById("type").value,
-    description: document.getElementById("description").value.trim(),
+    description: document.getElementById("description").value.trim() ,
     category: document.getElementById("category").value,
     amount: Number(document.getElementById("amount").value),
     date: document.getElementById("date").value
-  };
+  } ; 
+  if (!newEntry.description) {
+  alert("La descripción no puede estar vacía.");
+  return;
+}
 
   entries.unshift(newEntry);
   saveEntries();
@@ -195,7 +199,7 @@ function renderChart() {
     const x = padding + index * (barWidth + 20);
     const y = height - 40 - barHeight;
 
-    ctx.fillStyle = "#1ea7ff";
+    ctx.fillStyle = "rgba(30, 167, 255, 0.85)";
     ctx.fillRect(x, y, barWidth, barHeight);
 
     ctx.fillStyle = "#d8f1ff";
