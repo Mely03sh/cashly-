@@ -94,6 +94,8 @@ function saveEntries() {
 }
 
 function render() {
+    const filterTypeEl = document.getElementById("filterType");
+const filterCategoryEl = document.getElementById("filterCategory");
   renderTable();
   renderSummary();
   renderChart();
@@ -102,19 +104,30 @@ function render() {
 function renderTable() {
   tableBody.innerHTML = "";
 
-  if (!entries.length) {
+  const filterType = filterTypeEl.value;
+  const filterCategory = filterCategoryEl.value;
+
+  const filteredEntries = entries.filter((entry) => {
+    const typeMatch = filterType === "all" || entry.type === filterType;
+    const categoryMatch = filterCategory === "all" || entry.category === filterCategory;
+    return typeMatch && categoryMatch;
+  });
+
+  if (!filteredEntries.length) {
     const emptyRow = document.createElement("tr");
-    emptyRow.innerHTML = '<td colspan="6" class="muted">No hay movimientos aún.</td>';
+    emptyRow.innerHTML = '<td colspan="6" class="muted">No hay movimientos con ese filtro.</td>';
     tableBody.appendChild(emptyRow);
     return;
   }
 
-  entries.forEach((entry) => {
+  filteredEntries.forEach((entry) => {
     const row = document.createElement("tr");
 
     row.innerHTML = `
       <td>${entry.date}</td>
-      <td class="type-${entry.type}">${entry.type === "income" ? "Ingreso" : "Gasto"}</td>
+      <td class="type-${entry.type}">
+        ${entry.type === "income" ? "Ingreso" : "Gasto"}
+      </td>
       <td>${entry.description}</td>
       <td>${entry.category}</td>
       <td>${currencyFormatter.format(entry.amount)}</td>

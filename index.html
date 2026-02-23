@@ -86,6 +86,25 @@
       <section class="card">
         <div class="row-between">
           <h2>Movimientos</h2>
+          <div class="filters">
+  <select id="filterType">
+    <option value="all">Todos</option>
+    <option value="income">Ingresos</option>
+    <option value="expense">Gastos</option>
+  </select>
+
+  <select id="filterCategory">
+    <option value="all">Todas las categorías</option>
+    <option value="Salario">Salario</option>
+    <option value="Freelance">Freelance</option>
+    <option value="Comida">Comida</option>
+    <option value="Transporte">Transporte</option>
+    <option value="Hogar">Hogar</option>
+    <option value="Ocio">Ocio</option>
+    <option value="Salud">Salud</option>
+    <option value="Otros">Otros</option>
+  </select>
+</div>
           <div class="export-buttons">
             <button id="exportCsvBtn" type="button">Exportar Excel (CSV)</button>
             <button id="exportPdfBtn" type="button">Exportar PDF</button>
