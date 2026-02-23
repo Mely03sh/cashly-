@@ -15,6 +15,13 @@ const exportCsvBtn = document.getElementById("exportCsvBtn");
 const exportPdfBtn = document.getElementById("exportPdfBtn");
 const clearBtn = document.getElementById("clearBtn");
 const chartCanvas = document.getElementById("expenseChart");
+const filterTypeEl = document.getElementById("filterType");
+const filterCategoryEl = document.getElementById("filterCategory");
+const dateInput = document.getElementById("date");
+const typeInput = document.getElementById("type");
+const descriptionInput = document.getElementById("description");
+const categoryInput = document.getElementById("category");
+const amountInput = document.getElementById("amount");
 
 const currencyFormatter = new Intl.NumberFormat("es-CO", {
   style: "currency",
@@ -24,37 +31,59 @@ const currencyFormatter = new Intl.NumberFormat("es-CO", {
 let entries = loadEntries();
 let monthlyBudget = loadBudget();
 
-document.getElementById("date").valueAsDate = new Date();
+if (dateInput) {
+  dateInput.valueAsDate = new Date();
+}
+
 budgetInput.value = monthlyBudget || "";
 render();
 
 entryForm.addEventListener("submit", (event) => {
   event.preventDefault();
 
+  const description = descriptionInput.value.trim();
+  const amount = Number(amountInput.value);
+  const date = dateInput.value;
+
+  if (!description) {
+    alert("La descripción no puede estar vacía.");
+    return;
+  }
+
+  if (Number.isNaN(amount) || amount <= 0) {
+    alert("El monto debe ser mayor que 0.");
+    return;
+  }
+
+  if (!date) {
+    alert("Debes seleccionar una fecha.");
+    return;
+  }
+
   const newEntry = {
     id: crypto.randomUUID(),
-    type: document.getElementById("type").value,
-    description: document.getElementById("description").value.trim() ,
-    category: document.getElementById("category").value,
-    amount: Number(document.getElementById("amount").value),
-    date: document.getElementById("date").value
-  } ; 
-  if (!newEntry.description) {
-  alert("La descripción no puede estar vacía.");
-  return;
-}
+    type: typeInput.value,
+    description,
+    category: categoryInput.value,
+    amount,
+    date
+  };
 
   entries.unshift(newEntry);
   saveEntries();
   entryForm.reset();
-  document.getElementById("date").valueAsDate = new Date();
+
+  if (dateInput) {
+    dateInput.valueAsDate = new Date();
+  }
+
   render();
 });
 
 saveBudgetBtn.addEventListener("click", () => {
   const value = Number(budgetInput.value);
 
-  if (value <= 0 || Number.isNaN(value)) {
+  if (Number.isNaN(value) || value <= 0) {
     budgetStatus.textContent = "Ingresa un presupuesto válido mayor que 0.";
     return;
   }
@@ -67,6 +96,8 @@ saveBudgetBtn.addEventListener("click", () => {
 
 exportCsvBtn.addEventListener("click", exportCSV);
 exportPdfBtn.addEventListener("click", () => window.print());
+filterTypeEl.addEventListener("change", renderTable);
+filterCategoryEl.addEventListener("change", renderTable);
 
 clearBtn.addEventListener("click", () => {
   const confirmClear = confirm("¿Seguro que deseas borrar todos los movimientos?");
@@ -81,12 +112,23 @@ clearBtn.addEventListener("click", () => {
 
 function loadEntries() {
   const raw = localStorage.getItem(STORAGE_KEY);
-  return raw ? JSON.parse(raw) : [];
+
+  if (!raw) {
+    return [];
+  }
+
+  try {
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
 }
 
 function loadBudget() {
   const raw = localStorage.getItem(BUDGET_KEY);
-  return raw ? Number(raw) : 0;
+  const parsed = raw ? Number(raw) : 0;
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
 }
 
 function saveEntries() {
@@ -94,8 +136,6 @@ function saveEntries() {
 }
 
 function render() {
-    const filterTypeEl = document.getElementById("filterType");
-const filterCategoryEl = document.getElementById("filterCategory");
   renderTable();
   renderSummary();
   renderChart();
@@ -125,10 +165,8 @@ function renderTable() {
 
     row.innerHTML = `
       <td>${entry.date}</td>
-      <td class="type-${entry.type}">
-        ${entry.type === "income" ? "Ingreso" : "Gasto"}
-      </td>
-      <td>${entry.description}</td>
+      <td class="type-${entry.type}">${entry.type === "income" ? "Ingreso" : "Gasto"}</td>
+      <td>${escapeHtml(entry.description)}</td>
       <td>${entry.category}</td>
       <td>${currencyFormatter.format(entry.amount)}</td>
       <td><button data-id="${entry.id}" class="danger">Eliminar</button></td>
@@ -145,8 +183,14 @@ function renderTable() {
 }
 
 function renderSummary() {
-  const income = entries.filter((item) => item.type === "income").reduce((acc, item) => acc + item.amount, 0);
-  const expense = entries.filter((item) => item.type === "expense").reduce((acc, item) => acc + item.amount, 0);
+  const income = entries
+    .filter((item) => item.type === "income")
+    .reduce((acc, item) => acc + item.amount, 0);
+
+  const expense = entries
+    .filter((item) => item.type === "expense")
+    .reduce((acc, item) => acc + item.amount, 0);
+
   const balance = income - expense;
   const savingsRate = income > 0 ? ((balance / income) * 100).toFixed(1) : 0;
 
@@ -204,12 +248,13 @@ function renderChart() {
 
   const max = Math.max(...Object.values(expenseByCategory));
   const barAreaWidth = width - padding * 2;
-  const barWidth = barAreaWidth / categories.length - 20;
+  const gap = 20;
+  const barWidth = Math.max(20, barAreaWidth / categories.length - gap);
 
   categories.forEach((category, index) => {
     const value = expenseByCategory[category];
     const barHeight = ((height - 80) * value) / max;
-    const x = padding + index * (barWidth + 20);
+    const x = padding + index * (barWidth + gap);
     const y = height - 40 - barHeight;
 
     ctx.fillStyle = "rgba(30, 167, 255, 0.85)";
@@ -231,7 +276,13 @@ function exportCSV() {
   }
 
   const headers = ["fecha", "tipo", "descripcion", "categoria", "monto"];
-  const rows = entries.map((item) => [item.date, item.type, escapeCsv(item.description), item.category, item.amount]);
+  const rows = entries.map((item) => [
+    item.date,
+    item.type,
+    escapeCsv(item.description),
+    item.category,
+    item.amount
+  ]);
 
   const csvContent = [headers, ...rows].map((row) => row.join(",")).join("\n");
   const blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
@@ -249,4 +300,13 @@ function exportCSV() {
 function escapeCsv(value) {
   const escaped = String(value).replaceAll('"', '""');
   return `"${escaped}"`;
+}
+
+function escapeHtml(value) {
+  return String(value)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
 }
