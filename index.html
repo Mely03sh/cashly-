@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Cashly | Finanzas Personales</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="app-header">
+      <div class="brand-mark" aria-hidden="true"></div>
+      <h1><span class="brand-text">Cashly</span></h1>
+      <p>Controla en qué se va tu dinero.</p>
+    </header>
+
+    <main class="container">
+      <section class="card">
+        <h2>Presupuesto mensual</h2>
+        <div class="budget-row">
+          <input id="budgetInput" type="number" min="0" step="0.01" placeholder="Ej: 1200" />
+          <button id="saveBudgetBtn">Guardar presupuesto</button>
+        </div>
+        <p id="budgetStatus" class="muted"></p>
+      </section>
+
+      <section class="grid">
+        <article class="card">
+          <h2>Registrar movimiento</h2>
+          <form id="entryForm">
+            <label>
+              Tipo
+              <select id="type" required>
+                <option value="income">Ingreso</option>
+                <option value="expense">Gasto</option>
+              </select>
+            </label>
+
+            <label>
+              Descripción
+              <input id="description" type="text" required placeholder="Ej: Supermercado" />
+            </label>
+
+            <label>
+              Categoría
+              <select id="category" required>
+                <option value="Salario">Salario</option>
+                <option value="Freelance">Freelance</option>
+                <option value="Comida">Comida</option>
+                <option value="Transporte">Transporte</option>
+                <option value="Hogar">Hogar</option>
+                <option value="Ocio">Ocio</option>
+                <option value="Salud">Salud</option>
+                <option value="Otros">Otros</option>
+              </select>
+            </label>
+
+            <label>
+              Monto
+              <input id="amount" type="number" min="0.01" step="0.01" required placeholder="0.00" />
+            </label>
+
+            <label>
+              Fecha
+              <input id="date" type="date" required />
+            </label>
+
+            <button type="submit">Añadir movimiento</button>
+          </form>
+        </article>
+
+        <article class="card stats">
+          <h2>Resumen</h2>
+          <div class="stat"><span>Ingresos</span> <strong id="incomeTotal">$0.00</strong></div>
+          <div class="stat"><span>Gastos</span> <strong id="expenseTotal">$0.00</strong></div>
+          <div class="stat"><span>Balance</span> <strong id="balanceTotal">$0.00</strong></div>
+          <div class="stat"><span>Ahorro estimado</span> <strong id="savingsRate">0%</strong></div>
+          <p id="budgetAlert" class="alert hidden"></p>
+        </article>
+      </section>
+
+      <section class="card">
+        <h2>Gastos por categoría</h2>
+        <canvas id="expenseChart" width="800" height="300" aria-label="Gráfica de gastos por categoría"></canvas>
+      </section>
+
+      <section class="card">
+        <div class="row-between">
+          <h2>Movimientos</h2>
+          <div class="export-buttons">
+            <button id="exportCsvBtn" type="button">Exportar Excel (CSV)</button>
+            <button id="exportPdfBtn" type="button">Exportar PDF</button>
+            <button id="clearBtn" type="button" class="danger">Borrar todo</button>
+          </div>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Fecha</th>
+                <th>Tipo</th>
+                <th>Descripción</th>
+                <th>Categoría</th>
+                <th>Monto</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="entriesTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+
+    <script src="app.js"></script>
+  </body>
+</html>
