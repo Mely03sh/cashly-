@@ -222,6 +222,17 @@ function renderSummary() {
   }
 }
 
+const categoryColors = {
+  Salario: "#39d98a",
+  Freelance: "#1ce2e7",
+  Comida: "#ffb020",
+  Transporte: "#7f5af0",
+  Hogar: "#ff6b6b",
+  Ocio: "#ffd166",
+  Salud: "#4cc9f0",
+  Otros: "#1ea7ff"
+};
+
 function renderChart() {
   const ctx = chartCanvas.getContext("2d");
   const width = chartCanvas.width;
@@ -257,7 +268,7 @@ function renderChart() {
     const x = padding + index * (barWidth + gap);
     const y = height - 40 - barHeight;
 
-    ctx.fillStyle = "rgba(30, 167, 255, 0.85)";
+    ctx.fillStyle = categoryColors[category] || "#1ea7ff";
     ctx.fillRect(x, y, barWidth, barHeight);
 
     ctx.fillStyle = "#d8f1ff";
