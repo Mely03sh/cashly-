@@ -36,7 +36,9 @@ function saveBudget() {
 
   localStorage.setItem("budget", budget);
   budgetStatus.textContent = `Presupuesto mensual: $ ${budget.toLocaleString()}`;
+
   calculateTotals();
+  renderTable();
 }
 
 saveBudgetBtn.addEventListener("click", saveBudget);
@@ -71,8 +73,8 @@ entryForm.addEventListener("submit", (e) => {
 
   entryForm.reset();
 
-  renderTable();
   calculateTotals();
+  renderTable();
 });
 
 /* =========================
@@ -132,8 +134,8 @@ function deleteEntry(id) {
   entries = entries.filter((entry) => entry.id !== id);
   localStorage.setItem("entries", JSON.stringify(entries));
 
-  renderTable();
   calculateTotals();
+  renderTable();
 }
 
 /* =========================
@@ -164,8 +166,6 @@ function calculateTotals() {
   } else {
     budgetAlert.classList.add("hidden");
   }
-
-  updateChart(entries);
 }
 
 /* =========================
@@ -200,6 +200,14 @@ function updateChart(data) {
         },
       ],
     },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: false,
+        },
+      },
+    },
   });
 }
 
@@ -213,13 +221,13 @@ clearBtn.addEventListener("click", () => {
   entries = [];
   localStorage.removeItem("entries");
 
-  renderTable();
   calculateTotals();
+  renderTable();
 });
 
 /* =========================
    INICIO
 ========================= */
 
-renderTable();
 calculateTotals();
+renderTable();

@@ -5,13 +5,16 @@
   --card-2: #12213d;
   --text: #e9f6ff;
   --muted: #8fb5cf;
+
   --primary: #1ea7ff;
   --primary-strong: #0f75ff;
   --primary-soft: #1ce2e7;
+
   --danger: #ff5a7a;
   --ok: #39d98a;
+
   --border: #1f3c67;
-  --shadow: 0 12px 30px rgba(8, 22, 45, 0.45);
+  --shadow: 0 18px 40px rgba(5, 15, 35, 0.55);
 }
 
 * {
@@ -21,28 +24,26 @@
 body {
   margin: 0;
   font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-  background: radial-gradient(circle at top, #0a1a36 0%, var(--bg) 44%);
+  background: radial-gradient(circle at top, #0a1a36 0%, var(--bg) 46%);
   color: var(--text);
 }
 
+/* ================= HEADER ================= */
+
 .app-header {
   text-align: center;
-  padding: 2rem 1rem 1rem;
+  padding: 2.4rem 1rem 1.2rem;
 }
 
 .brand-mark {
-  width: 88px;
-  height: 88px;
-  margin: 0 auto 0.5rem;
+  width: 82px;
+  height: 82px;
+  margin: 0 auto 0.6rem;
   border-radius: 50%;
-  border: 3px solid transparent;
   background: linear-gradient(var(--bg-soft), var(--bg-soft)) padding-box,
     conic-gradient(from 205deg, #0f6bff, #15b6ff, #1ce2e7, #0f6bff) border-box;
-  box-shadow: 0 0 0 6px rgba(15, 117, 255, 0.13), 0 10px 35px rgba(13, 163, 255, 0.22);
-}
-
-.app-header h1 {
-  margin: 0;
+  border: 3px solid transparent;
+  box-shadow: 0 10px 30px rgba(0, 140, 255, 0.25);
 }
 
 .brand-text {
@@ -50,51 +51,60 @@ body {
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  letter-spacing: 0.4px;
 }
 
 .app-header p {
   color: var(--muted);
+  margin-top: 0.35rem;
 }
+
+/* ================= LAYOUT ================= */
 
 .container {
   max-width: 1100px;
   margin: 0 auto;
-  padding: 0 1rem 2rem;
+  padding: 0 1rem 2.2rem;
   display: grid;
-  gap: 1rem;
+  gap: 1.2rem;
 }
 
 .grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.2rem;
 }
+
+/* ================= CARDS ================= */
 
 .card {
   background: linear-gradient(180deg, var(--card) 0%, var(--card-2) 100%);
   border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 1rem;
+  border-radius: 16px;
+  padding: 1.25rem;
   box-shadow: var(--shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
 }
 
 h2 {
-  margin-top: 0;
-  font-size: 1.1rem;
+  margin: 0 0 1rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #cfe9ff;
 }
+
+/* ================= FORM ================= */
 
 label {
   display: grid;
-  gap: 0.35rem;
-  margin-bottom: 0.75rem;
+  gap: 0.4rem;
+  margin-bottom: 0.9rem;
   font-weight: 600;
-}
-
-input,
-select,
-button {
-  font: inherit;
+  font-size: 0.9rem;
+  color: #b7d7ed;
 }
 
 input,
@@ -102,79 +112,89 @@ select {
   background: #081427;
   color: var(--text);
   border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 0.6rem 0.7rem;
+  border-radius: 11px;
+  padding: 0.65rem 0.75rem;
+  transition: border 0.2s ease, background 0.2s ease;
 }
 
 input:focus,
 select:focus {
-  outline: 2px solid rgba(30, 167, 255, 0.35);
+  outline: none;
   border-color: var(--primary);
+  background: #0b1c35;
 }
+
+/* ================= BUTTONS ================= */
 
 button {
   border: 0;
-  border-radius: 10px;
-  padding: 0.6rem 0.9rem;
+  border-radius: 11px;
+  padding: 0.65rem 1rem;
   background: linear-gradient(135deg, var(--primary-soft), var(--primary-strong));
-  color: #fff;
+  color: white;
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  transition: transform 0.15s ease, filter 0.2s ease;
 }
 
 button:hover {
   filter: brightness(1.05);
+  transform: translateY(-1px);
 }
 
 button.danger {
   background: linear-gradient(135deg, #ff7391, var(--danger));
 }
 
+/* ================= BUDGET ================= */
+
 .budget-row {
   display: flex;
-  gap: 0.5rem;
+  gap: 0.6rem;
 }
 
 .budget-row input {
   flex: 1;
 }
 
+/* ================= STATS ================= */
+
 .stats .stat {
   display: flex;
   justify-content: space-between;
-  margin: 0.4rem 0;
+  align-items: center;
+  margin: 0.55rem 0;
+  font-size: 0.95rem;
+}
+
+.stats strong {
+  font-size: 1.05rem;
 }
 
 #balanceTotal {
+  font-size: 1.3rem;
   color: var(--ok);
 }
+
+/* ================= TEXT ================= */
 
 .muted {
   color: var(--muted);
 }
 
 .alert {
-  margin-top: 0.75rem;
-  padding: 0.6rem;
-  border-radius: 8px;
+  margin-top: 0.9rem;
+  padding: 0.65rem;
+  border-radius: 10px;
   font-weight: 600;
-}
-
-.alert.warning {
-  background: rgba(255, 209, 102, 0.2);
-  color: #ffdc8a;
-  border: 1px solid rgba(255, 209, 102, 0.35);
-}
-
-.alert.danger {
-  background: rgba(255, 90, 122, 0.2);
-  color: #ff9eb1;
-  border: 1px solid rgba(255, 90, 122, 0.35);
 }
 
 .hidden {
   display: none;
 }
+
+/* ================= TOP BAR ================= */
 
 .row-between {
   display: flex;
@@ -190,6 +210,8 @@ button.danger {
   flex-wrap: wrap;
 }
 
+/* ================= TABLE ================= */
+
 .table-wrap {
   overflow-x: auto;
 }
@@ -197,33 +219,47 @@ button.danger {
 table {
   width: 100%;
   border-collapse: collapse;
-}
-
-th,
-td {
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  padding: 0.7rem 0.4rem;
+  font-size: 0.92rem;
 }
 
 th {
-  color: #b7d7ed;
+  color: #9fc7e4;
+  font-weight: 600;
+  padding: 0.75rem 0.4rem;
+  border-bottom: 1px solid var(--border);
 }
 
-td:last-child,
-th:last-child {
+td {
+  padding: 0.75rem 0.4rem;
+  border-bottom: 1px solid rgba(31, 60, 103, 0.35);
+  color: #d8ecff;
+}
+
+tbody tr {
+  transition: background 0.2s ease;
+}
+
+tbody tr:hover {
+  background: rgba(30, 167, 255, 0.06);
+}
+
+td:last-child {
   text-align: right;
 }
 
+/* ================= TYPES ================= */
+
 .type-income {
   color: var(--ok);
-  font-weight: 700;
+  font-weight: 600;
 }
 
 .type-expense {
   color: #ff97ad;
-  font-weight: 700;
+  font-weight: 600;
 }
+
+/* ================= PRINT ================= */
 
 @media print {
   body {
@@ -237,11 +273,10 @@ th:last-child {
     background: #fff;
   }
 
+  button,
   .export-buttons,
   #entryForm,
   .budget-row,
-  #clearBtn,
-  button,
   .brand-mark {
     display: none !important;
   }
